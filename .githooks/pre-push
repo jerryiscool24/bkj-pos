@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# FAIL ON ERROR
+set -e
+
+# PRESERVE SCRIPT OUTPUT FORMATTING
+if [ -t 1 ]; then
+    exec >/dev/tty 2>/dev/tty </dev/tty
+fi
+
+printf "\n\n\n${WHITE_TEXT}${BLUE_BACKGROUND} <<<<<<<<<< START: PRE-PUSH GIT HOOK >>>>>>>>>> ${RESET}\n\n\n"
+
+# COLLECT UNSTAGED FILES BEFORE RUNNING SCRIPT
+unstaged=$(git diff --name-only)
+
+# RUN SCRIPT
+composer run pre-push --ansi
+
+# STAGE ALL CHANGES
+git add .
+
+# EXCLUDE EXPLICITLY UNSTAGED FILES
+if [ -n "$unstaged" ]; then
+    git reset $unstaged
+fi
+
+printf "\n\n\n${WHITE_TEXT}${BLUE_BACKGROUND} <<<<<<<<<< END: PRE-PUSH GIT HOOK >>>>>>>>>> ${RESET}\n\n\n"
