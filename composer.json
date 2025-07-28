@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.6",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.0",
         "laravel/pail": "^1.2.2",
@@ -67,6 +68,14 @@
             "chmod +x .githooks/pre-commit",
             "chmod +x .githooks/pre-push"
         ],
+        "ide-models": [
+            "@php artisan ide-helper:models -M"
+        ],
+        "ide": [
+            "@php artisan clear-compiled",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta"
+        ],
         "lint": [
             "./vendor/bin/pint --dirty"
         ],
@@ -82,6 +91,8 @@
             "@analyse"
         ],
         "pre-commit": [
+            "@ide",
+            "@ide-models",
             "@rectify",
             "@lint"
         ],
