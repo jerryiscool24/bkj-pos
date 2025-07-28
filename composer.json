@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.6",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.0",
         "laravel/pail": "^1.2.2",
@@ -43,7 +44,10 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -67,6 +71,14 @@
             "chmod +x .githooks/pre-commit",
             "chmod +x .githooks/pre-push"
         ],
+        "ide-models": [
+            "@php artisan ide-helper:models -M"
+        ],
+        "ide": [
+            "@php artisan clear-compiled",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta"
+        ],
         "lint": [
             "./vendor/bin/pint --dirty"
         ],
@@ -77,11 +89,15 @@
             "./vendor/bin/phpstan analyse --memory-limit=-1"
         ],
         "qa": [
+            "@ide",
+            "@ide-models",
             "@lint",
             "@rectify",
             "@analyse"
         ],
         "pre-commit": [
+            "@ide",
+            "@ide-models",
             "@rectify",
             "@lint"
         ],
